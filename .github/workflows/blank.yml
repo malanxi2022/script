@@ -1,0 +1,40 @@
+# .github/workflows/douban.yml
+name: douban
+on:
+  workflow_dispatch:
+  # schedule:
+  # - cron: "30 * * * *"
+  watch:
+    types: [started]
+  push:
+    branches:
+      - master
+    paths:
+      - main.py
+      
+jobs:
+  douban:
+    name: Douban mark data sync
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+          cache: pip
+          cache-dependency-path: "requirements.txt"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements.txt
+      
+
+      - name: Generate new md
+        run: |
+          source venv/bin/activate
+          python main.py
